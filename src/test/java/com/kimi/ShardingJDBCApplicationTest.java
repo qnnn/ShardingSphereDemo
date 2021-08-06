@@ -1,12 +1,12 @@
 package com.kimi;
 
 import com.kimi.entity.Course;
+import com.kimi.entity.User;
 import com.kimi.repository.CourseRepository;
+import com.kimi.repository.UserRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Random;
 
@@ -16,6 +16,13 @@ public class ShardingJDBCApplicationTest {
     @Autowired
     CourseRepository courseRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
+
+    /**
+     * 水平划分
+     */
     @Test
     public void main(){
 
@@ -31,6 +38,22 @@ public class ShardingJDBCApplicationTest {
     @Test
     public void find(){
         System.out.println(courseRepository.findById(630417154440691713L).orElseGet(Course::new).getUserId());
+    }
 
+
+    /**
+     * 垂直划分
+     */
+    @Test
+    public void vertical(){
+        User user = new User();
+        user.setStatus("激活");
+        user.setUsername("郭富城");
+        userRepository.save(user);
+    }
+
+    @Test
+    public void findUser(){
+        System.out.println(userRepository.findById(630447493783486464L).orElseGet(User::new).getUsername());
     }
 }

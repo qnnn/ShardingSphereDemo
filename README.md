@@ -26,3 +26,83 @@
 
 
 ### 主从同步
+**一主两从**
+
+
+**docker-compose.yml配置**
+
+
+```yaml
+version: "3"
+
+services:
+  mysql-master:
+    image: mysql:8.0.13
+    container_name: mysql-master
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - TZ=Asia/Shanghai
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - ./mysql-master-data:/var/lib/mysql
+      - ./init-db-sql/sakila-schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./init-db-sql/sakila-data.sql:/docker-entrypoint-initdb.d/2-data.sql
+      - ./init-db-sql/init-master.sh:/docker-entrypoint-initdb.d/3-init-master.sh
+    command: [
+      "--log-bin=mysql-bin",
+      "--server-id=1",
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_unicode_ci",
+      "--innodb_flush_log_at_trx_commit=1",
+      "--sync_binlog=1"
+      ]
+
+  mysql-node-1:
+    image: mysql:8.0.13
+    container_name: mysql-node-1
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MASTER_MYSQL_ROOT_PASSWORD=123456
+      - TZ=Asia/Shanghai
+    ports:
+      - "3307:3306"
+    depends_on:
+      - mysql-master
+    volumes:
+      - ./mysql-node-1-data:/var/lib/mysql
+      - ./init-db-sql/sakila-schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./init-db-sql/sakila-data.sql:/docker-entrypoint-initdb.d/2-data.sql
+      - ./init-db-sql/init-node.sh:/docker-entrypoint-initdb.d/3-init-node.sh
+    command: [
+      "--server-id=10",
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_unicode_ci",
+      ]
+
+  mysql-node-2:
+    image: mysql:8.0.13
+    container_name: mysql-node-2
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+      - MYSQL_ROOT_PASSWORD=123456
+      - MASTER_MYSQL_ROOT_PASSWORD=123456
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./mysql-node-2-data:/var/lib/mysql
+      - ./init-db-sql/sakila-schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./init-db-sql/sakila-data.sql:/docker-entrypoint-initdb.d/2-data.sql
+      - ./init-db-sql/init-node.sh:/docker-entrypoint-initdb.d/3-init-node.sh
+    command: [
+      "--server-id=20",
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_unicode_ci",
+      ]
+```
+

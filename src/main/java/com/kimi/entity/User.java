@@ -18,21 +18,19 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "course")
-public class Course implements Serializable {
+@Table(name = "user")
+public class User implements Serializable {
 
 
-    private static final long serialVersionUID = 2974131352028184171L;
-    @Column(name = "id")
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "name")
-    private String name;
+    private static final long serialVersionUID = 4951301866625846946L;
 
     @Column(name = "user_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
+
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "status")
     private String status;
@@ -45,16 +43,13 @@ public class Course implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Course course = (Course) o;
-        return Objects.equals(id, course.id);
+        User user = (User) o;
+        return Objects.equals(userId, user.userId);
     }
 
-    /**
-     * 重写hashcode防止死循环
-     * @return
-     */
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(userId,username);
     }
+
 }
