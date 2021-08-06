@@ -13,6 +13,7 @@
 ## Sharding-JDBC
 
 ### 水平划分
+![db](https://github.com/qnnn/ShardingSphereDemo/blob/main/photo/db.png?raw=trueg)
 **数据库分片规则：**
 + 根据user_id的奇偶进行数据库选择
 
