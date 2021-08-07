@@ -42,7 +42,7 @@ CREATE TABLE `course_1`  (
 
 
 ### 垂直划分（多数据源）
-### 主从同步
+### 主从同步、读写分离
 **垂直划分测试表**
 ```mysql
 DROP TABLE IF EXISTS `user`;
